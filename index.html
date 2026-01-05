@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陶·语 - 山东彩陶叙事可视化</title>
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d7ccc8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8d6e63; }
+        
+        /* Typography overrides for "larger and bolder" feel */
+        body { font-family: 'Noto Serif SC', serif; }
+        .font-reading { font-size: 1.125rem; line-height: 1.75rem; } /* text-lg */
+        .font-header { font-weight: 900; }
+    </style>
+</head>
+<body class="bg-[#f5f5f0] text-[#4e342e] font-serif overflow-hidden selection:bg-[#8d6e63] selection:text-white">
+
+    <!-- Main Container -->
+    <div id="app-container" class="w-full h-screen relative overflow-hidden bg-[#f5f5f0]">
+        
+        <!-- MODE 1: Story Mode (Scrollytelling Overlay) -->
+        <div id="story-overlay" class="absolute inset-0 z-50 pointer-events-none flex flex-col">
+            
+            <!-- Story Sections Container -->
+            <div id="story-scroller" class="w-full h-full overflow-y-auto pointer-events-auto snap-y snap-mandatory scroll-smooth">
+                
+                <!-- Section 1: Hero -->
+                <div class="story-section w-full h-screen flex items-center justify-center snap-start relative" data-step="1">
+                    <div class="bg-white/95 backdrop-blur-xl p-16 rounded-2xl shadow-2xl max-w-3xl text-center border-t-8 border-[#8d6e63]">
+                        <h1 class="text-6xl font-black text-[#3e2723] mb-8 tracking-wider">陶 · 语</h1>
+                        <div class="w-32 h-2 bg-[#8d6e63] mx-auto mb-10 rounded-full"></div>
+                        <p class="text-2xl text-[#5d4037] italic mb-10 leading-loose font-medium">
+                            “我是一件来自<span id="hero-era" class="font-bold text-[#8d6e63] px-1">新石器时代</span>的<span id="hero-shape" class="font-bold text-[#8d6e63] px-1">彩陶</span>。<br>
+                            在这里，我不只是一个数据点，我有我的故事。”
+                        </p>
+                        <div class="flex justify-center space-x-12 text-base text-[#8d6e63] font-bold uppercase tracking-[0.2em] mb-12">
+                            <span>大汶口文化</span>
+                            <span>•</span>
+                            <span>龙山文化</span>
+                            <span>•</span>
+                            <span>岳石文化</span>
+                        </div>
+                        <div class="animate-bounce text-[#8d6e63] flex flex-col items-center cursor-pointer opacity-80 hover:opacity-100">
+                            <span class="text-sm font-bold mb-2">向下探索</span>
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Identity -->
+                <div class="story-section w-full h-screen flex items-center px-32 snap-start" data-step="2">
+                    <div class="w-[500px] bg-white/95 backdrop-blur-xl shadow-2xl p-10 rounded-xl border-l-[12px] border-[#8d6e63] transform transition-all duration-700 translate-x-0 opacity-100">
+                        <h2 class="text-4xl font-black text-[#3e2723] mb-6">我是谁？</h2>
+                        <div class="w-64 h-64 mx-auto bg-[#efebe9] rounded-full mb-8 overflow-hidden border-[6px] border-[#8d6e63] shadow-inner relative group">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition z-10"></div>
+                            <img id="story-protagonist-img" src="" class="object-cover w-full h-full transform group-hover:scale-110 transition duration-1000">
+                        </div>
+                        <p class="text-2xl text-[#4e342e] mb-6 text-center font-bold">
+                            我叫 <span id="story-protagonist-name" class="text-[#8d6e63] underline decoration-2 underline-offset-4"></span>。
+                        </p>
+                        <p class="text-lg text-[#5d4037] leading-relaxed text-justify font-medium" id="story-protagonist-desc">
+                            <!-- Description -->
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 3: The World -->
+                <div class="story-section w-full h-screen flex items-center justify-end px-32 snap-start" data-step="3">
+                    <div class="w-[450px] bg-white/95 backdrop-blur-xl shadow-2xl p-10 rounded-xl border-r-[12px] border-[#8d6e63]">
+                        <h2 class="text-4xl font-black text-[#3e2723] mb-6">我的家族</h2>
+                        <p class="text-xl text-[#5d4037] mb-8 font-medium leading-relaxed">
+                            在山东这片广袤的土地上，我并不孤单。
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between border-b-2 border-[#d7ccc8] pb-3">
+                                <span class="text-base font-bold text-[#8d6e63]">同类数量</span>
+                                <span class="text-4xl font-black text-[#3e2723]" id="story-family-count">0</span>
+                            </div>
+                            <div class="flex items-center justify-between border-b-2 border-[#d7ccc8] pb-3">
+                                <span class="text-base font-bold text-[#8d6e63]">主要分布</span>
+                                <span class="text-2xl font-black text-[#3e2723]" id="story-family-city">...</span>
+                            </div>
+                        </div>
+                        <p class="mt-8 text-base text-[#5d4037] italic font-medium bg-[#efebe9] p-4 rounded-lg border-l-4 border-[#8d6e63]">
+                            “看，地图上那些闪烁的光点，都是我的兄弟姐妹。”
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 4: Transition -->
+                <div class="story-section w-full h-screen flex items-center justify-center snap-start" data-step="4">
+                    <div class="bg-white/95 backdrop-blur-xl p-16 rounded-2xl shadow-2xl text-center max-w-2xl border-b-8 border-[#8d6e63]">
+                        <h2 class="text-4xl font-black text-[#3e2723] mb-8">探索更多</h2>
+                        <p class="text-xl text-[#5d4037] mb-10 leading-relaxed font-medium">
+                            每一个光点背后，都有一段尘封的历史。<br>
+                            现在，交给你来探索这个世界。
+                        </p>
+                        <button onclick="app.enterExploreMode()" class="px-12 py-4 bg-[#8d6e63] text-white text-xl font-bold rounded-full shadow-lg hover:bg-[#6d4c41] transition transform hover:scale-105 hover:shadow-xl ring-4 ring-[#d7ccc8] ring-opacity-50">
+                            进入自由探索模式
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODE 2: Explore Mode -->
+        <div id="explore-interface" class="w-full h-full flex flex-col opacity-0 transition-opacity duration-1000 pointer-events-none">
+            <!-- TOP: Main Visual Area -->
+            <div class="flex-1 flex overflow-hidden">
+                
+                <!-- LEFT: Narrative Gallery -->
+                <div class="w-[500px] h-full bg-[#fcfbfb] border-r border-[#d7ccc8] flex flex-col shadow-2xl z-20 transition-transform duration-500 transform -translate-x-full" id="explore-sidebar">
+                    <!-- Gallery Header -->
+                    <div class="p-6 bg-[#8d6e63] text-white shadow-lg flex justify-between items-center z-10">
+                        <div>
+                            <h1 class="text-3xl font-black mb-1 tracking-wide">陶 · 语</h1>
+                            <p class="text-sm opacity-90 italic font-medium">自由探索模式</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="app.toggleAnalytics()" class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition font-bold text-xs backdrop-blur-sm border border-white/10" title="数据看板">
+                                <span>📊</span>
+                            </button>
+                            <button onclick="app.enterSimilarityMode()" class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition font-bold text-xs backdrop-blur-sm border border-white/10" title="寻找相似陶器">
+                                <span>🏺</span>
+                                <span>找朋友</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Spotlight Section -->
+                    <div id="gallery-spotlight" class="p-8 border-b border-[#d7ccc8] bg-white relative text-center shadow-sm z-0">
+                        <div class="w-56 h-56 mx-auto bg-stone-100 rounded-full overflow-hidden shadow-xl mb-6 border-[6px] border-[#efebe9] relative group cursor-zoom-in">
+                            <img id="spot-img" src="" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <h2 id="spot-title" class="text-3xl font-black text-[#3e2723] mb-2">...</h2>
+                        <div class="flex justify-center space-x-4 text-sm text-[#8d6e63] font-bold mb-4 uppercase tracking-wider">
+                            <span id="spot-museum" class="bg-[#efebe9] px-2 py-1 rounded">博物馆</span>
+                            <span id="spot-shape" class="bg-[#efebe9] px-2 py-1 rounded">器型</span>
+                        </div>
+                        <p id="spot-desc" class="text-base text-[#5d4037] leading-relaxed text-justify font-medium line-clamp-4 px-2">...</p>
+                    </div>
+
+                    <!-- Filter & List -->
+                    <div class="flex-1 flex flex-col overflow-hidden bg-[#fafafa]">
+                        <div class="px-6 py-3 border-b border-[#d7ccc8] bg-[#efebe9] flex justify-between items-center shadow-inner">
+                            <span class="text-sm font-black uppercase text-[#8d6e63] tracking-wider">文物列表</span>
+                            <span id="list-count" class="text-sm font-bold bg-[#8d6e63] text-white px-3 py-1 rounded-full shadow-sm">0</span>
+                        </div>
+                        <div id="gallery-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 gap-4 content-start">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Interactive Map -->
+                <div class="flex-1 h-full relative bg-[#f5f5f0]">
+                    <div id="map" class="w-full h-full"></div>
+                    
+                    <!-- Floating Control Panel -->
+                    <div class="absolute top-8 right-8 bg-white/95 backdrop-blur-xl shadow-2xl rounded-xl border border-[#d7ccc8] p-6 w-72 transition-transform duration-500 transform translate-x-full" id="explore-controls">
+                        <h3 class="font-black text-[#3e2723] mb-4 border-b-2 border-[#efebe9] pb-2 text-base flex items-center">
+                            <span class="w-2 h-6 bg-[#8d6e63] rounded-full mr-2"></span>器型筛选
+                        </h3>
+                        <div id="shape-filters" class="flex flex-wrap gap-2 mb-6">
+                            <!-- Buttons populated by JS -->
+                        </div>
+                        
+                        <h3 class="font-black text-[#3e2723] mb-4 border-b-2 border-[#efebe9] pb-2 pt-2 text-base flex items-center">
+                             <span class="w-2 h-6 bg-[#8d6e63] rounded-full mr-2"></span>地图模式
+                        </h3>
+                        <div class="flex bg-[#efebe9] rounded-lg p-1.5 shadow-inner mb-6">
+                            <button class="flex-1 py-2 text-sm font-bold rounded-md shadow-sm bg-white text-[#5d4037] transition" id="btn-mode-count" onclick="app.setMapMode('count')">藏量热力</button>
+                            <button class="flex-1 py-2 text-sm font-bold rounded-md text-stone-500 hover:text-[#5d4037] transition" id="btn-mode-clicks" onclick="app.setMapMode('clicks')">关注热度</button>
+                        </div>
+
+                        <!-- Timeline Slider -->
+                        <h3 class="font-black text-[#3e2723] mb-4 border-b-2 border-[#efebe9] pb-2 pt-2 text-base flex items-center">
+                             <span class="w-2 h-6 bg-[#8d6e63] rounded-full mr-2"></span>时空演化
+                        </h3>
+                        <div class="px-2 pb-2">
+                            <input type="range" min="0" max="2" step="1" value="0" class="w-full h-2 bg-[#d7ccc8] rounded-lg appearance-none cursor-pointer accent-[#8d6e63]" id="timeline-slider" oninput="app.updateTimeline(this.value)">
+                            <div class="flex justify-between text-xs text-[#8d6e63] mt-2 font-bold uppercase tracking-widest">
+                                <span>大汶口</span>
+                                <span>过渡</span>
+                                <span>龙山</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Legend -->
+                    <div class="absolute bottom-8 right-8 bg-white/90 backdrop-blur-md shadow-lg rounded-xl border border-[#d7ccc8] p-4 text-sm opacity-0 transition-opacity duration-1000" id="explore-legend">
+                        <div class="flex items-center mb-2">
+                            <span class="w-4 h-4 bg-[#bcaaa4] rounded-full mr-3 border-2 border-white shadow-sm"></span> 
+                            <span class="font-bold text-[#5d4037]">同名分布点</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full border-2 border-[#8d6e63] bg-stone-100 mr-3 flex items-center justify-center overflow-hidden">
+                                <span class="text-[8px]">图</span>
+                            </div>
+                            <span class="font-bold text-[#5d4037]">文物实体</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM: Analytics Dashboard (Collapsible) -->
+            <div id="analytics-panel" class="h-0 bg-[#fafafa] border-t-4 border-[#8d6e63] transition-all duration-700 ease-in-out overflow-hidden shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.2)] z-30 relative">
+                
+                <!-- Close Button -->
+                <button onclick="app.toggleAnalytics()" class="absolute top-4 right-4 p-2 hover:bg-[#efebe9] rounded-full transition text-[#8d6e63]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+
+                <div class="h-[400px] p-8 flex space-x-10 max-w-[1600px] mx-auto">
+                    <!-- Chart 1: 3-Level Sankey -->
+                    <div class="flex-1 flex flex-col bg-white p-4 rounded-xl shadow-sm border border-[#efebe9]">
+                        <h3 class="text-lg font-black text-[#5d4037] mb-4 flex items-center">
+                            <span class="bg-[#8d6e63] text-white w-6 h-6 rounded flex items-center justify-center text-xs mr-2">1</span>
+                            时空流变 (时代 → 城市 → 器型)
+                        </h3>
+                        <div id="chart-sankey" class="flex-1 w-full rounded"></div>
+                    </div>
+                    
+                    <!-- Chart 2: Parallel Coordinates -->
+                    <div class="flex-1 flex flex-col bg-white p-4 rounded-xl shadow-sm border border-[#efebe9]">
+                        <h3 class="text-lg font-black text-[#5d4037] mb-4 flex items-center">
+                            <span class="bg-[#8d6e63] text-white w-6 h-6 rounded flex items-center justify-center text-xs mr-2">2</span>
+                            多维特征分析 (年代/类型/热度)
+                        </h3>
+                        <div id="chart-parallel" class="flex-1 w-full rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE 3: Similarity Mode -->
+        <div id="similarity-interface" class="fixed inset-0 z-[60] bg-[#f5f5f0]/95 backdrop-blur-xl flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500" style="display: none;">
+            
+            <!-- Close Button -->
+            <button onclick="app.exitSimilarityMode()" class="absolute top-8 right-8 p-3 bg-white rounded-full shadow-lg hover:bg-[#efebe9] text-[#8d6e63] transition transform hover:scale-110 z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <!-- Search Bar -->
+            <div class="absolute top-12 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50">
+                <div class="relative group">
+                    <input type="text" id="sim-search-input" placeholder="输入陶器名称寻找相似..." 
+                        class="w-full py-4 px-6 rounded-full bg-white border-2 border-[#d7ccc8] text-[#5d4037] placeholder-[#a1887f] focus:outline-none focus:border-[#8d6e63] shadow-xl transition text-lg"
+                        onkeypress="if(event.key === 'Enter') app.searchSimilarity()">
+                    <button onclick="app.searchSimilarity()" class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 bg-[#8d6e63] text-white rounded-full hover:bg-[#6d4c41] transition shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Visualization -->
+            <div id="sim-viz-container" class="relative w-[800px] h-[800px] flex items-center justify-center">
+                
+                <!-- Loading State -->
+                <div id="sim-loading" class="absolute inset-0 flex items-center justify-center bg-white/50 z-30" style="display: none;">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#8d6e63]"></div>
+                </div>
+
+                <!-- Center Item -->
+                <div class="relative z-10 flex flex-col items-center group cursor-pointer">
+                    <div class="w-48 h-48 rounded-full border-[8px] border-[#8d6e63] shadow-2xl overflow-hidden bg-white relative">
+                        <img id="sim-center-img" src="" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="mt-6 bg-white px-6 py-2 rounded-full shadow-lg border border-[#d7ccc8]">
+                        <h2 id="sim-center-name" class="text-xl font-black text-[#3e2723]">...</h2>
+                    </div>
+                    <div class="mt-2 text-[#8d6e63] font-bold text-sm tracking-widest uppercase">当前选中</div>
+                </div>
+
+                <!-- Friends Ring Container -->
+                <div id="sim-friends-ring" class="absolute inset-0 pointer-events-none">
+                    <!-- JS will populate items here -->
+                </div>
+
+                <!-- Decorative Rings -->
+                <div class="absolute inset-0 border border-[#d7ccc8]/30 rounded-full scale-50 pointer-events-none"></div>
+                <div class="absolute inset-0 border border-[#d7ccc8]/20 rounded-full scale-75 pointer-events-none"></div>
+                <div class="absolute inset-0 border border-[#d7ccc8]/10 rounded-full scale-90 pointer-events-none"></div>
+            </div>
+
+            <!-- Hint -->
+            <div class="absolute bottom-10 text-[#a1887f] font-medium animate-pulse">
+                点击周围的陶器以探索更多关联
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

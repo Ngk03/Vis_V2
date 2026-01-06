@@ -42,17 +42,11 @@
                         <h1 class="text-6xl font-black text-[#3e2723] mb-8 tracking-wider">陶 · 语</h1>
                         <div class="w-32 h-2 bg-[#8d6e63] mx-auto mb-10 rounded-full"></div>
                         <p class="text-2xl text-[#5d4037] italic mb-10 leading-loose font-medium">
-                            “我是一件来自<span id="hero-era" class="font-bold text-[#8d6e63] px-1">新石器时代</span>的<span id="hero-shape" class="font-bold text-[#8d6e63] px-1">彩陶</span>。<br>
+                            “我是一件<span id="hero-shape" class="font-bold text-[#8d6e63] px-1">彩陶</span>。<br>
                             在这里，我不只是一个数据点，我有我的故事。”
                         </p>
-                        <div class="flex justify-center space-x-12 text-base text-[#8d6e63] font-bold uppercase tracking-[0.2em] mb-12">
-                            <span>大汶口文化</span>
-                            <span>•</span>
-                            <span>龙山文化</span>
-                            <span>•</span>
-                            <span>岳石文化</span>
-                        </div>
-                        <div class="animate-bounce text-[#8d6e63] flex flex-col items-center cursor-pointer opacity-80 hover:opacity-100">
+                        
+                        <div class="animate-bounce text-[#8d6e63] flex flex-col items-center cursor-pointer opacity-80 hover:opacity-100 mt-12">
                             <span class="text-sm font-bold mb-2">向下探索</span>
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                         </div>
@@ -185,19 +179,6 @@
                             <button class="flex-1 py-2 text-sm font-bold rounded-md shadow-sm bg-white text-[#5d4037] transition" id="btn-mode-count" onclick="app.setMapMode('count')">藏量热力</button>
                             <button class="flex-1 py-2 text-sm font-bold rounded-md text-stone-500 hover:text-[#5d4037] transition" id="btn-mode-clicks" onclick="app.setMapMode('clicks')">关注热度</button>
                         </div>
-
-                        <!-- Timeline Slider -->
-                        <h3 class="font-black text-[#3e2723] mb-4 border-b-2 border-[#efebe9] pb-2 pt-2 text-base flex items-center">
-                             <span class="w-2 h-6 bg-[#8d6e63] rounded-full mr-2"></span>时空演化
-                        </h3>
-                        <div class="px-2 pb-2">
-                            <input type="range" min="0" max="2" step="1" value="0" class="w-full h-2 bg-[#d7ccc8] rounded-lg appearance-none cursor-pointer accent-[#8d6e63]" id="timeline-slider" oninput="app.updateTimeline(this.value)">
-                            <div class="flex justify-between text-xs text-[#8d6e63] mt-2 font-bold uppercase tracking-widest">
-                                <span>大汶口</span>
-                                <span>过渡</span>
-                                <span>龙山</span>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Floating Legend -->
@@ -229,7 +210,7 @@
                     <div class="flex-1 flex flex-col bg-white p-4 rounded-xl shadow-sm border border-[#efebe9]">
                         <h3 class="text-lg font-black text-[#5d4037] mb-4 flex items-center">
                             <span class="bg-[#8d6e63] text-white w-6 h-6 rounded flex items-center justify-center text-xs mr-2">1</span>
-                            时空流变 (时代 → 城市 → 器型)
+                            分布流变 (城市 → 器型)
                         </h3>
                         <div id="chart-sankey" class="flex-1 w-full rounded"></div>
                     </div>
@@ -238,7 +219,7 @@
                     <div class="flex-1 flex flex-col bg-white p-4 rounded-xl shadow-sm border border-[#efebe9]">
                         <h3 class="text-lg font-black text-[#5d4037] mb-4 flex items-center">
                             <span class="bg-[#8d6e63] text-white w-6 h-6 rounded flex items-center justify-center text-xs mr-2">2</span>
-                            多维特征分析 (年代/类型/热度)
+                            特征分析 (类型/热度)
                         </h3>
                         <div id="chart-parallel" class="flex-1 w-full rounded"></div>
                     </div>

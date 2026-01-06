@@ -17,7 +17,7 @@ class VisualizationApp {
             activeCity: null,
             activeItem: null,
             showAnalytics: false,
-            timelineEra: 'all',
+            // timelineEra: 'all', // REMOVED
             similarityData: null,
             similarityList: [],
             currentSimId: null
@@ -348,14 +348,14 @@ class VisualizationApp {
         this.renderGallery();
     }
 
-    updateTimeline(val) {
-        const labels = ['all', '大汶口', '龙山']; 
-        this.state.timelineEra = labels[val] === 'all' ? 'all' : labels[val];
-        this.state.activeItem = null; // Clear selection when time traveling
-        this.renderMap();
-        this.renderGallery();
-        if (this.state.showAnalytics) this.updateAnalytics();
-    }
+    // updateTimeline(val) {
+    //     const labels = ['all', '大汶口', '龙山']; 
+    //     this.state.timelineEra = labels[val] === 'all' ? 'all' : labels[val];
+    //     this.state.activeItem = null; // Clear selection when time traveling
+    //     this.renderMap();
+    //     this.renderGallery();
+    //     if (this.state.showAnalytics) this.updateAnalytics();
+    // }
 
     // --- Logic: Analytics ---
     
@@ -406,7 +406,7 @@ class VisualizationApp {
         if (!this.sankeyChart) this.sankeyChart = echarts.init(container);
         this.sankeyChart.resize(); // Resize immediately to be safe
         
-        // Construct 3-Level Sankey Data: Era -> City -> Shape
+        // Construct 2-Level Sankey Data: City -> Shape
         const items = this.data.all_items;
         
         // Use a map to track unique nodes and their categories to avoid name collisions
@@ -415,17 +415,13 @@ class VisualizationApp {
         const linksMap = {};
 
         items.forEach(item => {
-            const era = `Era:${this.getEra(item)}`;
+            // const era = `Era:${this.getEra(item)}`; // Removed
             const city = `City:${item.city}`;
             const shape = `Shape:${item.shape_type}`;
 
-            nodes.add(era);
+            // nodes.add(era);
             nodes.add(city);
             nodes.add(shape);
-
-            // Era -> City
-            const key1 = `${era}|${city}`;
-            linksMap[key1] = (linksMap[key1] || 0) + 1;
 
             // City -> Shape
             const key2 = `${city}|${shape}`;
@@ -488,14 +484,11 @@ class VisualizationApp {
         this.parallelChart.resize(); // Resize immediately
 
         // Prepare Data for Parallel Coords
-        // Dimensions: Era (Categorical), Shape (Categorical), Popularity (Numerical)
-        const eras = ['大汶口文化', '龙山文化', '岳石文化', '新石器时代(通用)', '其他'];
+        // Dimensions: Shape (Categorical), Popularity (Numerical)
         const shapes = this.data.dimensions.shapes;
         
         const data = this.data.all_items.map(item => {
-            const era = this.getEra(item);
             return [
-                eras.indexOf(era),
                 shapes.indexOf(item.shape_type),
                 item.clickCounts || 0
             ];
@@ -503,9 +496,8 @@ class VisualizationApp {
 
         const option = {
             parallelAxis: [
-                { dim: 0, name: '时代', type: 'category', data: eras },
-                { dim: 1, name: '器型', type: 'category', data: shapes },
-                { dim: 2, name: '关注度', type: 'value' }
+                { dim: 0, name: '器型', type: 'category', data: shapes },
+                { dim: 1, name: '关注度', type: 'value' }
             ],
             parallel: {
                 left: '5%', right: '10%', bottom: '10%', top: '20%',
@@ -573,9 +565,10 @@ class VisualizationApp {
             items = items.filter(i => i.shape_type === this.state.filterShape);
         }
         
-        if (this.state.timelineEra !== 'all') {
-            items = items.filter(i => i.yearName && i.yearName.includes(this.state.timelineEra));
-        }
+        // Removed Era Filtering
+        // if (this.state.timelineEra !== 'all') {
+        //     items = items.filter(i => i.yearName && i.yearName.includes(this.state.timelineEra));
+        // }
 
         let displayItems = items.slice(0, 60);
 
@@ -708,7 +701,7 @@ class VisualizationApp {
     renderGallery() {
         let items = this.data.all_items;
         if (this.state.filterShape !== 'all') items = items.filter(i => i.shape_type === this.state.filterShape);
-        if (this.state.timelineEra !== 'all') items = items.filter(i => i.yearName && i.yearName.includes(this.state.timelineEra));
+        // if (this.state.timelineEra !== 'all') items = items.filter(i => i.yearName && i.yearName.includes(this.state.timelineEra));
         
         document.getElementById('list-count').innerText = items.length;
         document.getElementById('gallery-list').innerHTML = items.map(item => `
